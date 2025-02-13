@@ -1,0 +1,99 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抖音 & 微博热点榜单</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .column {
+            width: 48%; /* 左右两列各占48%宽度 */
+        }
+        .topic {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .topic a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        .topic .hotindex {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .topic .label {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 3px 8px;
+            background-color: #3498db;
+            color: white;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>抖音 & 微博热点榜单 Top 50</h1>
+    <div class="container">
+        <!-- 左边：抖音热点 -->
+        <div class="column">
+            <h2>抖音热点</h2>
+            <div id="douyin-topics"></div>
+        </div>
+
+        <!-- 右边：微博热点 -->
+        <div class="column">
+            <h2>微博热点</h2>
+            <div id="weibo-topics"></div>
+        </div>
+    </div>
+
+    <script>
+        // 获取热点数据并展示
+        async function fetchHotTopics() {
+            const response = await fetch('/api/hot-topics');
+            const data = await response.json();
+
+            // 渲染抖音热点
+            renderTopics(data.douyin, 'douyin-topics');
+
+            // 渲染微博热点
+            renderTopics(data.weibo, 'weibo-topics');
+        }
+
+        // 渲染热点数据到指定容器
+        function renderTopics(topics, containerId) {
+            const topicsContainer = document.getElementById(containerId);
+
+            topics.forEach(topic => {
+                const topicDiv = document.createElement('div');
+                topicDiv.className = 'topic';
+                topicDiv.innerHTML = `
+                    <a href="#" target="_blank">${topic.title}</a>
+                    <span class="hotindex">热度: ${topic.hotindex}</span>
+                    <div class="label">${topic.label}</div>
+                `;
+                topicsContainer.appendChild(topicDiv);
+            });
+        }
+
+        fetchHotTopics();
+    </script>
+</body>
+</html>
