@@ -1,26 +1,43 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>抖音 & 微博热点榜单</title>
+    <title>热点榜单</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f4f4f4;
         }
-        .container {
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .horizontal-container {
             display: flex;
-            justify-content: space-between;
+            overflow-x: auto;
+            gap: 20px;
+            padding-bottom: 20px;
         }
         .column {
-            width: 48%; /* 左右两列各占48%宽度 */
+            flex: 0 0 auto;
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .column h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #3498db;
         }
         .topic {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #eee;
             border-radius: 5px;
             background-color: #f9f9f9;
         }
@@ -43,56 +60,71 @@
             font-size: 12px;
             border-radius: 3px;
         }
-        h2 {
-            text-align: center;
-        }
     </style>
 </head>
 <body>
-    <h1>抖音 & 微博热点榜单 Top 50</h1>
-    <div class="container">
-        <!-- 左边：抖音热点 -->
+    <h1>热点榜单 Top 50</h1>
+    <div class="horizontal-container">
+        <!-- 抖音热点 -->
         <div class="column">
             <h2>抖音热点</h2>
             <div id="douyin-topics"></div>
         </div>
-
-        <!-- 右边：微博热点 -->
+        <!-- 微博热点 -->
         <div class="column">
             <h2>微博热点</h2>
             <div id="weibo-topics"></div>
         </div>
+        <!-- 国际新闻热点 -->
+        <div class="column">
+            <h2>国际新闻热点</h2>
+            <div id="world-topics"></div>
+        </div>
+        <!-- 今日头条热点 -->
+        <div class="column">
+            <h2>今日头条热点</h2>
+            <div id="topnews-topics"></div>
+        </div>
+        <!-- 财经新闻热点 -->
+        <div class="column">
+            <h2>财经新闻热点</h2>
+            <div id="caijing-topics"></div>
+        </div>
+        <!-- 腾讯新闻热点 -->
+        <div class="column">
+            <h2>腾讯新闻热点</h2>
+            <div id="wxhottopic-topics"></div>
+        </div>
     </div>
-
     <script>
         // 获取热点数据并展示
         async function fetchHotTopics() {
             const response = await fetch('/api/hot-topics');
             const data = await response.json();
-
-            // 渲染抖音热点
+            // 渲染每个榜单
             renderTopics(data.douyin, 'douyin-topics');
-
-            // 渲染微博热点
             renderTopics(data.weibo, 'weibo-topics');
+            renderTopics(data.world, 'world-topics');
+            renderTopics(data.topnews, 'topnews-topics');
+            renderTopics(data.caijing, 'caijing-topics');
+            renderTopics(data.wxhottopic, 'wxhottopic-topics');
         }
-
         // 渲染热点数据到指定容器
         function renderTopics(topics, containerId) {
             const topicsContainer = document.getElementById(containerId);
-
+            topicsContainer.innerHTML = ''; // 清空旧数据
             topics.forEach(topic => {
                 const topicDiv = document.createElement('div');
                 topicDiv.className = 'topic';
                 topicDiv.innerHTML = `
-                    <a href="#" target="_blank">${topic.title}</a>
+                    <a href="${topic.link}" target="_blank">${topic.title}</a>
                     <span class="hotindex">热度: ${topic.hotindex}</span>
                     <div class="label">${topic.label}</div>
                 `;
                 topicsContainer.appendChild(topicDiv);
             });
         }
-
+        // 初始化加载数据
         fetchHotTopics();
     </script>
 </body>
